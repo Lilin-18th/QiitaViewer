@@ -15,6 +15,7 @@ import org.jetbrains.compose.resources.StringResource
 import qiitaviewer.composeapp.generated.resources.Res
 import qiitaviewer.composeapp.generated.resources.article_detail
 import qiitaviewer.composeapp.generated.resources.article_list
+import ui.component.CenteredAppBar
 import ui.screens.QiitaArticleDetailScreen
 import ui.screens.QiitaArticleListScreen
 
@@ -36,7 +37,13 @@ fun QiitaArticle(
     )
 
     Scaffold(
-        topBar = {},
+        topBar = {
+            CenteredAppBar(
+                title = currentScreen.title.key,
+                isNavigationBack = navController.previousBackStackEntry != null,
+                onClickBack = { navController.popBackStack() }
+            )
+        },
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -49,9 +56,7 @@ fun QiitaArticle(
                 QiitaArticleListScreen()
             }
             composable(route = QiitaScreens.ArticleDetail.name) {
-                QiitaArticleDetailScreen(
-                    onClickBack = { navController.popBackStack() }
-                )
+                QiitaArticleDetailScreen()
             }
         }
     }
