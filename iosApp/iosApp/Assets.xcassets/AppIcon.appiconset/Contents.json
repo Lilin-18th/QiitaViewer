@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "qiita_icon.png",
+      "filename" : "qiita_icon_ios.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "300x300"

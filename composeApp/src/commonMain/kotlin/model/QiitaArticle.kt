@@ -12,13 +12,21 @@ data class QiitaArticleList(
     val likes: Int?,
     @SerialName("created_at")
     val createDate: String,
+    val tags: List<Tags>,
     val user: User,
+)
+
+@Serializable
+data class Tags(
+    val name: String,
 )
 
 @Serializable
 data class User(
     val name: String,
     val description: String?,
+    @SerialName("profile_image_url")
+    val userImage: String,
 )
 
 @Serializable
