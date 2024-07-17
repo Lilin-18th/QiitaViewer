@@ -15,6 +15,7 @@ import org.jetbrains.compose.resources.StringResource
 import qiitaviewer.composeapp.generated.resources.Res
 import qiitaviewer.composeapp.generated.resources.article_detail
 import qiitaviewer.composeapp.generated.resources.article_list
+import repository.QiitaRepository
 import ui.component.CenteredAppBar
 import ui.screens.QiitaArticleDetailScreen
 import ui.screens.QiitaArticleListScreen
@@ -26,7 +27,7 @@ enum class QiitaScreens(val title: StringResource) {
 
 @Composable
 fun QiitaArticle(
-    viewModel: QiitaArticleViewModel = androidx.lifecycle.viewmodel.compose.viewModel { QiitaArticleViewModel() },
+    viewModel: QiitaArticleViewModel = androidx.lifecycle.viewmodel.compose.viewModel { QiitaArticleViewModel(qiitaRepository = QiitaRepository()) },
     navController: NavHostController = rememberNavController(),
 ) {
     // Get current back stack entry
@@ -53,7 +54,9 @@ fun QiitaArticle(
                 .padding(innerPadding)
         ) {
             composable(route = QiitaScreens.ArticleList.name) {
-                QiitaArticleListScreen()
+                QiitaArticleListScreen(
+                    list = viewModel.articleList.value,
+                )
             }
             composable(route = QiitaScreens.ArticleDetail.name) {
                 QiitaArticleDetailScreen()

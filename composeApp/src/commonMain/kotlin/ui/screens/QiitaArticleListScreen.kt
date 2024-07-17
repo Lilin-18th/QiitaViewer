@@ -31,20 +31,10 @@ import model.QiitaArticleList
 import repository.QiitaRepository
 
 @Composable
-fun QiitaArticleListScreen() {
-    val scope = rememberCoroutineScope()
-    val list = remember { mutableStateOf<List<QiitaArticleList>>(emptyList()) }
-    LaunchedEffect(true) {
-        scope.launch {
-            list.value = try {
-                QiitaRepository().getItems()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                emptyList()
-            }
-        }
-    }
-    if (list.value.isEmpty()) {
+fun QiitaArticleListScreen(
+    list: List<QiitaArticleList>,
+) {
+    if (list.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
@@ -56,7 +46,7 @@ fun QiitaArticleListScreen() {
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        items(list.value) { item ->
+        items(list) { item ->
             QiitaListView(
                 name = item.user.name,
                 title = item.title,
