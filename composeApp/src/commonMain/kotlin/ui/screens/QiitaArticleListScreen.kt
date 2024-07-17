@@ -29,18 +29,14 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import model.QiitaArticleList
 import repository.QiitaRepository
+import ui.component.RotateAnimation
 
 @Composable
 fun QiitaArticleListScreen(
     list: List<QiitaArticleList>,
 ) {
     if (list.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
+        RotateAnimation()
     }
 
     LazyColumn(
