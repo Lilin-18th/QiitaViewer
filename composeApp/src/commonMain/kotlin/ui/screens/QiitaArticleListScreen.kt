@@ -1,5 +1,6 @@
 package ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,8 +13,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,8 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import model.QiitaArticleList
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 import repository.QiitaRepository
 import ui.component.RotateAnimation
 
@@ -45,8 +54,9 @@ fun QiitaArticleListScreen(
         items(list) { item ->
             QiitaListView(
                 name = item.user.name,
+                createDate = item.createDate,
                 title = item.title,
-                description = item.user.description,
+                likes = item.likes,
             )
         }
     }
@@ -54,9 +64,10 @@ fun QiitaArticleListScreen(
 
 @Composable
 fun QiitaListView(
-    name: String?,
+    name: String,
+    createDate: String,
     title: String,
-    description: String?,
+    likes: Int?,
 ) {
     Card(
         modifier = Modifier
@@ -70,29 +81,43 @@ fun QiitaListView(
                 .padding(all = 10.dp),
         ) {
             Column {
+                if (name.isNotEmpty()) {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White,
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                }
+
                 Text(
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                    textAlign = TextAlign.Start,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    text = title,
+                    text = createDate,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+
                 Row {
-                    Text(
-                        modifier = Modifier.padding(start = 10.dp),
-                        maxLines = 1,
-                        color = Color.Gray.copy(alpha = 0.6f),
-                        text = name ?: "No name",
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "likes",
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(5.dp))
 
                     Text(
-                        modifier = Modifier.padding(end = 10.dp),
-                        maxLines = 1,
-                        color = Color.Gray.copy(alpha = 0.6f),
-                        text = description ?: "No description",
+                        text = likes.toString(),
+                        fontSize = 16.sp,
+                        color = Color.White,
                     )
                 }
             }

@@ -2,6 +2,10 @@ package ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +23,7 @@ import repository.QiitaRepository
 import ui.component.CenteredAppBar
 import ui.screens.QiitaArticleDetailScreen
 import ui.screens.QiitaArticleListScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 enum class QiitaScreens(val title: StringResource) {
     ArticleList(title = Res.string.article_list),
@@ -27,7 +32,7 @@ enum class QiitaScreens(val title: StringResource) {
 
 @Composable
 fun QiitaArticle(
-    viewModel: QiitaArticleViewModel = androidx.lifecycle.viewmodel.compose.viewModel { QiitaArticleViewModel(qiitaRepository = QiitaRepository()) },
+    viewModel: QiitaArticleViewModel = viewModel { QiitaArticleViewModel(qiitaRepository = QiitaRepository()) },
     navController: NavHostController = rememberNavController(),
 ) {
     // Get current back stack entry
@@ -45,6 +50,21 @@ fun QiitaArticle(
                 onClickBack = { navController.popBackStack() }
             )
         },
+        floatingActionButton = {
+            if (currentScreen == QiitaScreens.ArticleList && viewModel.articleList.value.isNotEmpty()) {
+                FloatingActionButton(
+                    onClick = {
+
+                    },
+                    content = {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = null,
+                        )
+                    }
+                )
+            }
+        }
     ) { innerPadding ->
         NavHost(
             navController = navController,
