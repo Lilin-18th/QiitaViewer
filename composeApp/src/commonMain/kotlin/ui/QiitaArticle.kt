@@ -24,6 +24,7 @@ import ui.component.CenteredAppBar
 import ui.screens.QiitaArticleDetailScreen
 import ui.screens.QiitaArticleListScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import mvi.QiitaIntent
 
 enum class QiitaScreens(val title: StringResource) {
     ArticleList(title = Res.string.article_list),
@@ -32,7 +33,7 @@ enum class QiitaScreens(val title: StringResource) {
 
 @Composable
 fun QiitaArticle(
-    viewModel: QiitaArticleViewModel = viewModel { QiitaArticleViewModel(qiitaRepository = QiitaRepository()) },
+    viewModel: QiitaArticleViewModel = viewModel { QiitaArticleViewModel() },
     navController: NavHostController = rememberNavController(),
 ) {
     // Get current back stack entry
@@ -51,10 +52,10 @@ fun QiitaArticle(
             )
         },
         floatingActionButton = {
-            if (currentScreen == QiitaScreens.ArticleList && viewModel.articleList.value.isNotEmpty()) {
+            if (currentScreen == QiitaScreens.ArticleList) {
                 FloatingActionButton(
                     onClick = {
-
+                        viewModel.handleIntent(QiitaIntent.RetryQiitaArticle)
                     },
                     content = {
                         Icon(
@@ -75,7 +76,7 @@ fun QiitaArticle(
         ) {
             composable(route = QiitaScreens.ArticleList.name) {
                 QiitaArticleListScreen(
-                    list = viewModel.articleList.value,
+                    viewModel = viewModel,
                 )
             }
             composable(route = QiitaScreens.ArticleDetail.name) {

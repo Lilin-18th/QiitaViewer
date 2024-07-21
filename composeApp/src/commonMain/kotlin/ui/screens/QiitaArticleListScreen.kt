@@ -23,6 +23,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,31 +36,51 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import model.QiitaArticleList
 import model.Tags
-import org.jetbrains.compose.resources.InternalResourceApi
+import mvi.QiitaIntent
+import ui.QiitaArticleViewModel
 import ui.component.RotateAnimation
 
 @Composable
 fun QiitaArticleListScreen(
-    list: List<QiitaArticleList>,
+    viewModel: QiitaArticleViewModel,
 ) {
-    if (list.isEmpty()) {
-        RotateAnimation()
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(viewModel) {
+        viewModel.handleIntent(QiitaIntent.LoadQiitaArticle)
     }
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        items(list) { item ->
-            QiitaListView(
-                name = item.user.name,
-                createDate = item.createDate,
-                title = item.title,
-                tags = item.tags,
-                likes = item.likes,
-                imageUrl = item.user.userImage,
-            )
+        when {
+            state.loading -> {
+                item {
+                    RotateAnimation()
+                }
+            }
+
+            state.error != null -> {
+                item {
+                    Text(
+                        text = "Error: ${state.error}",
+                    )
+                }
+            }
+
+            else -> {
+                items(state.articleList) { item ->
+                    QiitaListView(
+                        name = item.user.name,
+                        createDate = item.createDate,
+                        title = item.title,
+                        tags = item.tags,
+                        likes = item.likes,
+                        imageUrl = item.user.userImage,
+                    )
+                }
+            }
         }
     }
 }

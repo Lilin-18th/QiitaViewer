@@ -3,23 +3,66 @@ package ui
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import model.QiitaArticleList
+import mvi.QiitaIntent
+import mvi.QiitaViewState
 import repository.QiitaRepository
 
-class QiitaArticleViewModel(
-    qiitaRepository: QiitaRepository,
-) : ViewModel() {
-    private val _articleList = mutableStateOf<List<QiitaArticleList>>(emptyList())
-    val articleList = _articleList
+class QiitaArticleViewModel: ViewModel() {
 
-    init {
+    private val qiitaRepository = QiitaRepository()
+
+    private val _state = MutableStateFlow(QiitaViewState())
+    val state: StateFlow<QiitaViewState> = _state
+
+    fun handleIntent(intent: QiitaIntent) {
         viewModelScope.launch {
-            _articleList.value = try {
-                qiitaRepository.getItems()
-            } catch (e: Exception) {
-                emptyList()
+            when (intent) {
+                is QiitaIntent.LoadQiitaArticle -> fetchQiita()
+                is QiitaIntent.RetryQiitaArticle -> retryQiita()
             }
+        }
+    }
+
+    private suspend fun retryQiita() {
+        _state.value = _state.value.copy(
+            loading = true,
+            error = null,
+        )
+
+        try {
+            val articleList = qiitaRepository.getItems()
+            _state.value = QiitaViewState(
+                loading = false,
+                articleList = articleList,
+            )
+        } catch (e: Exception) {
+            _state.value = _state.value.copy(
+                loading = false,
+                error = e.message,
+            )
+        }
+    }
+
+    private suspend fun fetchQiita() {
+        _state.value = _state.value.copy(
+            loading = true,
+            error = null,
+        )
+        try {
+            val articleList = qiitaRepository.getItems()
+            _state.value = QiitaViewState(
+                loading = false,
+                articleList = articleList,
+            )
+        } catch (e: Exception) {
+            _state.value = _state.value.copy(
+                loading = false,
+                error = e.message,
+            )
         }
     }
 }
