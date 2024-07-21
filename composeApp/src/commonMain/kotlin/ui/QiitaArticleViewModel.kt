@@ -3,6 +3,7 @@ package ui
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,6 +18,10 @@ class QiitaArticleViewModel: ViewModel() {
 
     private val _state = MutableStateFlow(QiitaViewState())
     val state: StateFlow<QiitaViewState> = _state
+
+    fun onClickArticle(id: String) {
+        Logger.d { "onClickArticle: $id" }
+    }
 
     fun handleIntent(intent: QiitaIntent) {
         viewModelScope.launch {

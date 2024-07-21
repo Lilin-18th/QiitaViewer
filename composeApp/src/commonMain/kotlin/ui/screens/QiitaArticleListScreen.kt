@@ -2,10 +2,12 @@ package ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import model.QiitaArticleList
 import model.Tags
 import mvi.QiitaIntent
 import ui.QiitaArticleViewModel
@@ -51,27 +54,30 @@ fun QiitaArticleListScreen(
         viewModel.handleIntent(QiitaIntent.LoadQiitaArticle)
     }
 
-    LazyColumn(
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        when {
-            state.loading -> {
-                item {
-                    RotateAnimation()
-                }
+    when {
+        state.loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                RotateAnimation()
             }
+        }
 
-            state.error != null -> {
-                item {
-                    Text(
-                        text = "Error: ${state.error}",
-                    )
-                }
-            }
+        state.error != null -> {
+            Text(
+                text = "Error: ${state.error}",
+            )
+        }
 
-            else -> {
+        else -> {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 items(state.articleList) { item ->
                     QiitaListView(
+                        modifier = Modifier.clickable { viewModel.onClickArticle(item.id) },
                         name = item.user.name,
                         createDate = item.createDate,
                         title = item.title,
@@ -87,6 +93,7 @@ fun QiitaArticleListScreen(
 
 @Composable
 fun QiitaListView(
+    modifier: Modifier,
     name: String,
     createDate: String,
     title: String,
@@ -96,14 +103,14 @@ fun QiitaListView(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(all = 10.dp),
+            .padding(all = 10.dp)
+            .fillMaxWidth(),
         shape = RoundedCornerShape(10.dp)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 10.dp),
+            modifier = modifier
+                .padding(all = 10.dp)
+                .fillMaxWidth(),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
