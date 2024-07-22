@@ -13,4 +13,4 @@ mviアーキテクチャを軽く使用してあります。
 ## エミュレータ動作
 |Android|iOS|
 |---|---|
-|<video width="240" src="">|<video width="240" src="">|
+|<video width="240" src="https://github.com/user-attachments/assets/62fd5060-5df1-4b18-bc88-1fd1e7cd08d2">|<video width="240" src="https://github.com/user-attachments/assets/d7628c0d-f529-49b1-a77c-98b4f6f1756c">|
