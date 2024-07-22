@@ -50,7 +50,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             // koin
-//            implementation()
+            implementation(libs.koin.core)
             // coroutines
             implementation(libs.kotlinx.coroutines.core)
             // serialization
