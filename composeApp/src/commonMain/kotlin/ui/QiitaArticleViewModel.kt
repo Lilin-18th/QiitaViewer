@@ -12,10 +12,9 @@ import mvi.QiitaIntent
 import mvi.QiitaViewState
 import repository.QiitaRepository
 
-class QiitaArticleViewModel: ViewModel() {
-
-    private val qiitaRepository = QiitaRepository()
-
+class QiitaArticleViewModel(
+    private val repository: QiitaRepository
+): ViewModel() {
     private val _state = MutableStateFlow(QiitaViewState())
     val state: StateFlow<QiitaViewState> = _state
 
@@ -39,7 +38,7 @@ class QiitaArticleViewModel: ViewModel() {
         )
 
         try {
-            val articleList = qiitaRepository.getItems()
+            val articleList = repository.getItems()
             _state.value = QiitaViewState(
                 loading = false,
                 articleList = articleList,
@@ -58,7 +57,7 @@ class QiitaArticleViewModel: ViewModel() {
             error = null,
         )
         try {
-            val articleList = qiitaRepository.getItems()
+            val articleList = repository.getItems()
             _state.value = QiitaViewState(
                 loading = false,
                 articleList = articleList,

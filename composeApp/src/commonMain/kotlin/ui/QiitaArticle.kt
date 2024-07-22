@@ -15,25 +15,25 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import mvi.QiitaIntent
 import org.jetbrains.compose.resources.StringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 import qiitaviewer.composeapp.generated.resources.Res
 import qiitaviewer.composeapp.generated.resources.article_detail
 import qiitaviewer.composeapp.generated.resources.article_list
-import repository.QiitaRepository
 import ui.component.CenteredAppBar
 import ui.screens.QiitaArticleDetailScreen
 import ui.screens.QiitaArticleListScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
-import mvi.QiitaIntent
 
 enum class QiitaScreens(val title: StringResource) {
     ArticleList(title = Res.string.article_list),
     ArticleDetail(title = Res.string.article_detail),
 }
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun QiitaArticle(
-    viewModel: QiitaArticleViewModel = viewModel { QiitaArticleViewModel() },
     navController: NavHostController = rememberNavController(),
 ) {
     // Get current back stack entry
@@ -42,6 +42,8 @@ fun QiitaArticle(
     val currentScreen = QiitaScreens.valueOf(
         backStackEntry?.destination?.route ?: QiitaScreens.ArticleList.name
     )
+
+    val viewModel = koinViewModel<QiitaArticleViewModel>()
 
     Scaffold(
         topBar = {
@@ -52,19 +54,17 @@ fun QiitaArticle(
             )
         },
         floatingActionButton = {
-            if (currentScreen == QiitaScreens.ArticleList) {
-                FloatingActionButton(
-                    onClick = {
-                        viewModel.handleIntent(QiitaIntent.RetryQiitaArticle)
-                    },
-                    content = {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = null,
-                        )
-                    }
-                )
-            }
+            FloatingActionButton(
+                onClick = {
+                    viewModel.handleIntent(QiitaIntent.RetryQiitaArticle)
+                },
+                content = {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = null,
+                    )
+                }
+            )
         }
     ) { innerPadding ->
         NavHost(
