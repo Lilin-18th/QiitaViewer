@@ -35,6 +35,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             // ktor
             implementation(libs.ktor.client.okhttp)
+            // koin
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
             // coroutines
             implementation(libs.kotlinx.coroutines.android)
         }
@@ -50,7 +53,9 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             // koin
-            implementation(libs.koin.core)
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
             // coroutines
             implementation(libs.kotlinx.coroutines.core)
             // serialization
