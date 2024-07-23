@@ -54,17 +54,19 @@ fun QiitaArticle(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    viewModel.handleIntent(QiitaIntent.RetryQiitaArticle)
-                },
-                content = {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = null,
-                    )
-                }
-            )
+            if (currentScreen == QiitaScreens.ArticleList) {
+                FloatingActionButton(
+                    onClick = {
+                        viewModel.handleIntent(QiitaIntent.RetryQiitaArticleList)
+                    },
+                    content = {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = null,
+                        )
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         NavHost(
@@ -77,10 +79,13 @@ fun QiitaArticle(
             composable(route = QiitaScreens.ArticleList.name) {
                 QiitaArticleListScreen(
                     viewModel = viewModel,
+                    onClickArticle = { navController.navigate(QiitaScreens.ArticleDetail.name) }
                 )
             }
             composable(route = QiitaScreens.ArticleDetail.name) {
-                QiitaArticleDetailScreen()
+                QiitaArticleDetailScreen(
+                    viewModel = viewModel,
+                )
             }
         }
     }

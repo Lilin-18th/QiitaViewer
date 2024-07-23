@@ -25,7 +25,7 @@ class QiitaRepositoryImpl : QiitaRepository {
     }
 
     override suspend fun getArticle(id: String?): QiitaArticle {
-        return client.get("$BASE_URL/api/v2/items/{$id}").body()
+        return client.get("$BASE_URL/api/v2/items/$id").body()
     }
 
     companion object {

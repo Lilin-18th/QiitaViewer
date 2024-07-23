@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import model.QiitaArticleList
 import model.Tags
 import mvi.QiitaIntent
 import ui.QiitaArticleViewModel
@@ -47,11 +46,12 @@ import ui.component.RotateAnimation
 @Composable
 fun QiitaArticleListScreen(
     viewModel: QiitaArticleViewModel,
+    onClickArticle: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(viewModel) {
-        viewModel.handleIntent(QiitaIntent.LoadQiitaArticle)
+        viewModel.handleIntent(QiitaIntent.LoadQiitaArticleList)
     }
 
     when {
@@ -77,7 +77,10 @@ fun QiitaArticleListScreen(
             ) {
                 items(state.articleList) { item ->
                     QiitaListView(
-                        modifier = Modifier.clickable { viewModel.onClickArticle(item.id) },
+                        modifier = Modifier.clickable {
+                            viewModel.setId(item.id)
+                            onClickArticle()
+                        },
                         name = item.user.name,
                         createDate = item.createDate,
                         title = item.title,
