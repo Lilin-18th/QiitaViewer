@@ -72,6 +72,8 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
+            // webview
+            api("io.github.kevinnzou:compose-webview-multiplatform:1.9.20")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

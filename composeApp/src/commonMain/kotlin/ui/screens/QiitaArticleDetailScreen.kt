@@ -3,17 +3,16 @@ package ui.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import mvi.QiitaIntent
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.rememberWebViewState
 import ui.QiitaArticleViewModel
 import ui.component.RotateAnimation
 
@@ -22,10 +21,6 @@ fun QiitaArticleDetailScreen(
     viewModel: QiitaArticleViewModel,
 ) {
     val state by viewModel.state.collectAsState()
-
-    LaunchedEffect(viewModel) {
-        viewModel.handleIntent(QiitaIntent.GetQiitaArticl(viewModel.id.value))
-    }
 
     when {
         state.loading -> {
@@ -45,14 +40,13 @@ fun QiitaArticleDetailScreen(
         }
 
         state.article != null -> {
+            val webViewState = rememberWebViewState(state.article!!.url)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
             ) {
-                Text(
-                    text = state.article!!.body,
-                )
+                WebView(webViewState)
             }
         }
     }
